@@ -1,0 +1,258 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1,
+						2
+					],
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-b4f0ca7ecb3e7f30271a.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.12"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12,
+						13,
+						14,
+						15,
+						17,
+						18
+					]
+				},
+				{
+					"build" : "sc2_bridge_interfaces__py",
+					"jsonFile" : "directory-sc2_bridge_interfaces__py-c03ed77760441bd98e49.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.12"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "/home/ros/ws/ros2_ws/build/sc2_bridge_interfaces/sc2_bridge_interfaces__py",
+					"targetIndexes" : 
+					[
+						4
+					]
+				},
+				{
+					"build" : "sc2_bridge_interfaces__rs",
+					"jsonFile" : "directory-sc2_bridge_interfaces__rs-374fe50bf0dc4a5ab1b6.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.12"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "/home/ros/ws/ros2_ws/build/sc2_bridge_interfaces/sc2_bridge_interfaces__rs",
+					"targetIndexes" : 
+					[
+						16
+					]
+				}
+			],
+			"name" : "",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0,
+						1,
+						2
+					],
+					"name" : "sc2_bridge_interfaces",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12,
+						13,
+						14,
+						15,
+						16,
+						17,
+						18
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "ament_cmake_python_build_sc2_bridge_interfaces_egg::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ament_cmake_python_build_sc2_bridge_interfaces_egg-4f8e835079052a6b74e3.json",
+					"name" : "ament_cmake_python_build_sc2_bridge_interfaces_egg",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ament_cmake_python_copy_sc2_bridge_interfaces::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ament_cmake_python_copy_sc2_bridge_interfaces-bfed136ef674ba23e36f.json",
+					"name" : "ament_cmake_python_copy_sc2_bridge_interfaces",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "sc2_bridge_interfaces::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-sc2_bridge_interfaces-0ce9e6ab8660683b5813.json",
+					"name" : "sc2_bridge_interfaces",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "sc2_bridge_interfaces__cpp::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-sc2_bridge_interfaces__cpp-ba1f3114451908fc52a5.json",
+					"name" : "sc2_bridge_interfaces__cpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "sc2_bridge_interfaces__py::@328268aad18e64786882",
+					"jsonFile" : "target-sc2_bridge_interfaces__py-2369bb82ffd2820827e9.json",
+					"name" : "sc2_bridge_interfaces__py",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "sc2_bridge_interfaces__rosidl_generator_c::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-sc2_bridge_interfaces__rosidl_generator_c-3ca2330f1d6ca4d84849.json",
+					"name" : "sc2_bridge_interfaces__rosidl_generator_c",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "sc2_bridge_interfaces__rosidl_generator_py::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-sc2_bridge_interfaces__rosidl_generator_py-c5c12dfd7b928be17970.json",
+					"name" : "sc2_bridge_interfaces__rosidl_generator_py",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "sc2_bridge_interfaces__rosidl_typesupport_c::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-sc2_bridge_interfaces__rosidl_typesupport_c-fba4d8bbc23100adee22.json",
+					"name" : "sc2_bridge_interfaces__rosidl_typesupport_c",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "sc2_bridge_interfaces__rosidl_typesupport_c__pyext::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-sc2_bridge_interfaces__rosidl_typesupport_c__pyext-b26fa32bbc891f9593a2.json",
+					"name" : "sc2_bridge_interfaces__rosidl_typesupport_c__pyext",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "sc2_bridge_interfaces__rosidl_typesupport_cpp::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-sc2_bridge_interfaces__rosidl_typesupport_cpp-03059a2a138e597d94af.json",
+					"name" : "sc2_bridge_interfaces__rosidl_typesupport_cpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "sc2_bridge_interfaces__rosidl_typesupport_fastrtps_c::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-sc2_bridge_interfaces__rosidl_typesupport_fastrtps_c-72dff16eca28db711e5d.json",
+					"name" : "sc2_bridge_interfaces__rosidl_typesupport_fastrtps_c",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "sc2_bridge_interfaces__rosidl_typesupport_fastrtps_c__pyext::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-sc2_bridge_interfaces__rosidl_typesupport_fastrtps_c__pyext-b64e0d2880c88d7ecc39.json",
+					"name" : "sc2_bridge_interfaces__rosidl_typesupport_fastrtps_c__pyext",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "sc2_bridge_interfaces__rosidl_typesupport_fastrtps_cpp::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-sc2_bridge_interfaces__rosidl_typesupport_fastrtps_cpp-7f101ce3023cc29e67bd.json",
+					"name" : "sc2_bridge_interfaces__rosidl_typesupport_fastrtps_cpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "sc2_bridge_interfaces__rosidl_typesupport_introspection_c::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-sc2_bridge_interfaces__rosidl_typesupport_introspection_c-750780ec189d852a35de.json",
+					"name" : "sc2_bridge_interfaces__rosidl_typesupport_introspection_c",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "sc2_bridge_interfaces__rosidl_typesupport_introspection_c__pyext::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-sc2_bridge_interfaces__rosidl_typesupport_introspection_c__pyext-92ff09ea057df94307e9.json",
+					"name" : "sc2_bridge_interfaces__rosidl_typesupport_introspection_c__pyext",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "sc2_bridge_interfaces__rosidl_typesupport_introspection_cpp::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-sc2_bridge_interfaces__rosidl_typesupport_introspection_cpp-6d676eb443cf4e273438.json",
+					"name" : "sc2_bridge_interfaces__rosidl_typesupport_introspection_cpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 2,
+					"id" : "sc2_bridge_interfaces__rs::@fecc4d10e216fb843cab",
+					"jsonFile" : "target-sc2_bridge_interfaces__rs-5559cafed7326b621202.json",
+					"name" : "sc2_bridge_interfaces__rs",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "sc2_bridge_interfaces_uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-sc2_bridge_interfaces_uninstall-ad71a1e4c774186a4c56.json",
+					"name" : "sc2_bridge_interfaces_uninstall",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-uninstall-83fdf1556a63c693fc3a.json",
+					"name" : "uninstall",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/ros/ws/ros2_ws/build/sc2_bridge_interfaces",
+		"source" : "/home/ros/ws/ros2_ws/src/sc2_bridge_interfaces"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

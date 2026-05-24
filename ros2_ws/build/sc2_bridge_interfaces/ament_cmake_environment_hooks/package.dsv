@@ -1,0 +1,4 @@
+source;share/sc2_bridge_interfaces/local_setup.bash
+source;share/sc2_bridge_interfaces/local_setup.dsv
+source;share/sc2_bridge_interfaces/local_setup.sh
+source;share/sc2_bridge_interfaces/local_setup.zsh

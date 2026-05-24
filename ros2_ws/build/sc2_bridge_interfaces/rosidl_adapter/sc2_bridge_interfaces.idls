@@ -1,0 +1,9 @@
+/home/ros/ws/ros2_ws/build/sc2_bridge_interfaces/rosidl_adapter/sc2_bridge_interfaces:msg/ContactMark.idl
+/home/ros/ws/ros2_ws/build/sc2_bridge_interfaces/rosidl_adapter/sc2_bridge_interfaces:msg/ContactMarkArray.idl
+/home/ros/ws/ros2_ws/build/sc2_bridge_interfaces/rosidl_adapter/sc2_bridge_interfaces:msg/GameInfo.idl
+/home/ros/ws/ros2_ws/build/sc2_bridge_interfaces/rosidl_adapter/sc2_bridge_interfaces:msg/UnitState.idl
+/home/ros/ws/ros2_ws/build/sc2_bridge_interfaces/rosidl_adapter/sc2_bridge_interfaces:msg/UnitStateArray.idl
+/home/ros/ws/ros2_ws/build/sc2_bridge_interfaces/rosidl_adapter/sc2_bridge_interfaces:srv/KillUnits.idl
+/home/ros/ws/ros2_ws/build/sc2_bridge_interfaces/rosidl_adapter/sc2_bridge_interfaces:srv/SpawnUnits.idl
+/home/ros/ws/ros2_ws/build/sc2_bridge_interfaces/rosidl_adapter/sc2_bridge_interfaces:action/Attack.idl
+/home/ros/ws/ros2_ws/build/sc2_bridge_interfaces/rosidl_adapter/sc2_bridge_interfaces:action/Move.idl

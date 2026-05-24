@@ -8,15 +8,17 @@ services:
     container_name: sc2-server
     environment:
       - DISPLAY=${DISPLAY}
+      - XAUTHORITY=/root/.Xauthority
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ~/.Xauthority:/root/.Xauthority:ro
     expose:
       - "8167"
     ports:
       - "8167:8167"
     networks:
       - sc2net
-    command: ["./Versions/Base75689/SC2_x64", "-listen", "0.0.0.0", "-port", "8167", "-displayMode", "1"]
+    command: ["-port", "8167", "-displayMode", "1"]
     restart: unless-stopped
 
   ros2-bridge:

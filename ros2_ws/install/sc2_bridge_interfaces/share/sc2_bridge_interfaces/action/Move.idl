@@ -1,0 +1,27 @@
+// generated from rosidl_adapter/resource/action.idl.em
+// with input from sc2_bridge_interfaces/action/Move.action
+// generated code does not contain a copyright notice
+
+#include "geometry_msgs/msg/Point.idl"
+
+module sc2_bridge_interfaces {
+  module action {
+    struct Move_Goal {
+      geometry_msgs::msg::Point target;
+
+      boolean queue;
+
+      float tolerance;
+    };
+    struct Move_Result {
+      boolean success;
+
+      string message;
+    };
+    struct Move_Feedback {
+      float distance_remaining;
+
+      boolean arrived;
+    };
+  };
+};

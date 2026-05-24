@@ -1,0 +1,4 @@
+string[] aliases
+---
+bool success
+string message

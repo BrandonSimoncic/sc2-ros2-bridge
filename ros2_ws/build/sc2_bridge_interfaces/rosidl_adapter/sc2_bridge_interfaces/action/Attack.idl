@@ -1,0 +1,27 @@
+// generated from rosidl_adapter/resource/action.idl.em
+// with input from sc2_bridge_interfaces/action/Attack.action
+// generated code does not contain a copyright notice
+
+#include "geometry_msgs/msg/Point.idl"
+
+module sc2_bridge_interfaces {
+  module action {
+    struct Attack_Goal {
+      uint64 target_tag;
+
+      geometry_msgs::msg::Point target_point;
+
+      boolean queue;
+    };
+    struct Attack_Result {
+      boolean success;
+
+      string message;
+    };
+    struct Attack_Feedback {
+      float distance_to_target;
+
+      boolean engaged;
+    };
+  };
+};

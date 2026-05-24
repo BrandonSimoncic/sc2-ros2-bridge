@@ -1,0 +1,21 @@
+sc2_bridge:
+  ros__parameters:
+    sc2_host: sc2-server
+    sc2_port: 8167
+    map_name: /StarCraftII/maps/Flat482Spawns.SC2Map
+    realtime: false
+    step_size: 2
+    publish_rate_hz: 10.0
+    world_frame_id: sc2_map
+    publish_tf: true
+    arrival_tolerance: 0.5
+    god_mode: true
+    mark_alliances: [4]
+    mark_staleness_sec: 0.0
+    publish_contacts: true
+    autostart: true
+    computer_opponent: true
+    move_ability_id: 16
+    attack_ability_id: 23
+    sc2_timeout_sec: 10.0
+    sc2_retry_timeout_sec: 120.0

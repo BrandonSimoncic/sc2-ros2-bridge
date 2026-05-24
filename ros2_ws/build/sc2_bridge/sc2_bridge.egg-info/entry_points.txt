@@ -1,0 +1,4 @@
+[console_scripts]
+sc2_bridge_node = sc2_bridge.bridge_node:main
+swarm_demo = sc2_bridge.swarm_demo:main
+

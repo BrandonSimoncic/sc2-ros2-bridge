@@ -1,0 +1,14 @@
+{
+  "package_name": "sc2_bridge_interfaces",
+  "non_idl_tuples": [
+    "/home/ros/ws/ros2_ws/src/sc2_bridge_interfaces:msg/ContactMark.msg",
+    "/home/ros/ws/ros2_ws/src/sc2_bridge_interfaces:msg/ContactMarkArray.msg",
+    "/home/ros/ws/ros2_ws/src/sc2_bridge_interfaces:msg/GameInfo.msg",
+    "/home/ros/ws/ros2_ws/src/sc2_bridge_interfaces:msg/UnitState.msg",
+    "/home/ros/ws/ros2_ws/src/sc2_bridge_interfaces:msg/UnitStateArray.msg",
+    "/home/ros/ws/ros2_ws/src/sc2_bridge_interfaces:srv/KillUnits.srv",
+    "/home/ros/ws/ros2_ws/src/sc2_bridge_interfaces:srv/SpawnUnits.srv",
+    "/home/ros/ws/ros2_ws/src/sc2_bridge_interfaces:action/Attack.action",
+    "/home/ros/ws/ros2_ws/src/sc2_bridge_interfaces:action/Move.action"
+  ]
+}

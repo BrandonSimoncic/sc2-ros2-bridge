@@ -1,0 +1,12 @@
+Metadata-Version: 2.1
+Name: sc2-bridge
+Version: 0.1.0
+Summary: ROS2 bridge node for StarCraft II raw-interface unit control.
+Home-page: UNKNOWN
+Maintainer: bsimoncic
+Maintainer-email: bsimoncic@example.com
+License: Apache-2.0
+Platform: UNKNOWN
+
+UNKNOWN
+

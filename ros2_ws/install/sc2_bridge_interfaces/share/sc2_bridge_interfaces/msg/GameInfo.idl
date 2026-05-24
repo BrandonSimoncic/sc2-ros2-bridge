@@ -1,0 +1,26 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from sc2_bridge_interfaces/msg/GameInfo.msg
+// generated code does not contain a copyright notice
+
+#include "geometry_msgs/msg/Point.idl"
+#include "std_msgs/msg/Header.idl"
+
+module sc2_bridge_interfaces {
+  module msg {
+    struct GameInfo {
+      std_msgs::msg::Header header;
+
+      string map_name;
+
+      string game_version;
+
+      boolean realtime;
+
+      string world_frame_id;
+
+      geometry_msgs::msg::Point playable_min;
+
+      geometry_msgs::msg::Point playable_max;
+    };
+  };
+};

@@ -1,0 +1,51 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from sc2_bridge_interfaces/msg/UnitState.msg
+// generated code does not contain a copyright notice
+
+#include "geometry_msgs/msg/Point.idl"
+
+module sc2_bridge_interfaces {
+  module msg {
+    module UnitState_Constants {
+      const uint8 ALLIANCE_SELF = 1;
+      const uint8 ALLIANCE_ALLY = 2;
+      const uint8 ALLIANCE_NEUTRAL = 3;
+      const uint8 ALLIANCE_ENEMY = 4;
+      const uint8 DISPLAY_VISIBLE = 1;
+      const uint8 DISPLAY_SNAPSHOT = 2;
+      const uint8 DISPLAY_HIDDEN = 3;
+      const uint8 DISPLAY_PLACEHOLDER = 4;
+    };
+    struct UnitState {
+      uint64 tag;
+
+      string alias;
+
+      uint32 unit_type;
+
+      uint32 owner;
+
+      uint8 alliance;
+
+      uint8 display_type;
+
+      geometry_msgs::msg::Point position;
+
+      float facing;
+
+      float radius;
+
+      float health;
+
+      float health_max;
+
+      float energy;
+
+      float energy_max;
+
+      boolean is_alive;
+
+      sequence<uint32> order_ability_ids;
+    };
+  };
+};

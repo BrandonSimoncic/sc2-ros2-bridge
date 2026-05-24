@@ -1,0 +1,9 @@
+geometry_msgs/Point target
+bool queue
+float32 tolerance
+---
+bool success
+string message
+---
+float32 distance_remaining
+bool arrived

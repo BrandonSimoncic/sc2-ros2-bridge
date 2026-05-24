@@ -1,0 +1,1 @@
+/home/ros/ws/ros2_ws/build/sc2_bridge/launch/sc2_bridge.launch.py

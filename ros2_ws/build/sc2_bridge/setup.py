@@ -1,0 +1,1 @@
+/home/ros/ws/ros2_ws/src/sc2_bridge/setup.py
