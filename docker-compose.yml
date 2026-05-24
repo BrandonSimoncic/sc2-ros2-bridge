@@ -1,0 +1,30 @@
+services:
+  sc2:
+    image: alkurbatov/sc2
+    container_name: sc2
+    network_mode: host
+    restart: unless-stopped
+
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        USERNAME: ros
+        USER_UID: ${UID:-1000}
+        USER_GID: ${GID:-1000}
+    image: sc2-bridge-dev
+    container_name: sc2-bridge
+    stdin_open: true
+    tty: true
+    network_mode: host
+    environment:
+      - DISPLAY=${DISPLAY}
+      - XAUTHORITY=${XAUTHORITY:-/home/ros/.Xauthority}
+    volumes:
+      - .:/home/ros/ws/src/sc2-bridge
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ~/.Xauthority:/home/ros/.Xauthority:ro
+    working_dir: /home/ros/ws
+    depends_on:
+      - sc2
