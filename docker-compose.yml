@@ -1,11 +1,25 @@
 services:
-  sc2:
-    image: alkurbatov/sc2
-    container_name: sc2
-    network_mode: host
+  sc2-server:
+    build:
+      context: ./sc2_server
+      args:
+        SC2_IMAGE: docker.io/alkurbatov/sc2
+    image: sc2-server:alkurbatov
+    container_name: sc2-server
+    environment:
+      - DISPLAY=${DISPLAY}
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    expose:
+      - "8167"
+    ports:
+      - "8167:8167"
+    networks:
+      - sc2net
+    command: ["./Versions/Base75689/SC2_x64", "-listen", "0.0.0.0", "-port", "8167", "-displayMode", "1"]
     restart: unless-stopped
 
-  dev:
+  ros2-bridge:
     build:
       context: .
       dockerfile: Dockerfile
@@ -15,16 +29,26 @@ services:
         USER_GID: ${GID:-1000}
     image: sc2-bridge-dev
     container_name: sc2-bridge
-    stdin_open: true
-    tty: true
-    network_mode: host
     environment:
+      - SC2_HOST=sc2-server
+      - SC2_PORT=8167
+      - SC2_MAP=/StarCraftII/maps/Flat482Spawns.SC2Map
       - DISPLAY=${DISPLAY}
       - XAUTHORITY=${XAUTHORITY:-/home/ros/.Xauthority}
     volumes:
-      - .:/home/ros/ws/src/sc2-bridge
+      - .:/home/ros/ws
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - ~/.Xauthority:/home/ros/.Xauthority:ro
-    working_dir: /home/ros/ws
+    working_dir: /home/ros/ws/ros2_ws
+    command: >
+      bash -lc "colcon build --symlink-install &&
+      source install/setup.bash &&
+      ros2 launch sc2_bridge sc2_bridge.launch.py"
+    networks:
+      - sc2net
     depends_on:
-      - sc2
+      - sc2-server
+
+networks:
+  sc2net:
+    driver: bridge

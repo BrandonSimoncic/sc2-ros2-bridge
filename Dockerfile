@@ -18,8 +18,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-pip \
     ros-humble-ament-cmake \
     ros-humble-ament-cmake-python \
+    ros-humble-launch-ros \
+    ros-humble-rosidl-default-generators \
+    ros-humble-rosidl-default-runtime \
+    ros-humble-tf2-ros \
+    ros-humble-visualization-msgs \
     ros-dev-tools \
     && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt /tmp/sc2_bridge_requirements.txt
+RUN python3 -m pip install --no-cache-dir -r /tmp/sc2_bridge_requirements.txt \
+    && rm /tmp/sc2_bridge_requirements.txt
 
 # Set up colcon mixins for faster builds
 RUN colcon mixin add default \
@@ -42,6 +51,7 @@ WORKDIR /home/${USERNAME}/ws
 
 # Source ROS2 in every shell session
 RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc \
+    && echo "if [ -f /home/${USERNAME}/ws/ros2_ws/install/setup.bash ]; then source /home/${USERNAME}/ws/ros2_ws/install/setup.bash; fi" >> ~/.bashrc \
     && echo "source /usr/share/colcon_cd/function/colcon_cd.sh" >> ~/.bashrc \
     && echo "export _colcon_cd_root=/opt/ros/humble/" >> ~/.bashrc
 
