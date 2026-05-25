@@ -1,25 +1,21 @@
 services:
-  sc2-server:
-    build:
-      context: ./sc2_server
-      args:
-        SC2_IMAGE: docker.io/alkurbatov/sc2
-    image: sc2-server:alkurbatov
-    container_name: sc2-server
-    environment:
-      - DISPLAY=${DISPLAY}
-      - XAUTHORITY=/root/.Xauthority
-    volumes:
-      - /tmp/.X11-unix:/tmp/.X11-unix:rw
-      - ~/.Xauthority:/root/.Xauthority:ro
-    expose:
-      - "8167"
-    ports:
-      - "8167:8167"
-    networks:
-      - sc2net
-    command: ["-port", "8167", "-displayMode", "1"]
-    restart: unless-stopped
+  # sc2-server is disabled — SC2 runs locally via Lutris/Wine on the host.
+  # To re-enable headless mode, uncomment this service and revert SC2_HOST below.
+  #
+  # sc2-server:
+  #   build:
+  #     context: ./sc2_server
+  #     args:
+  #       SC2_IMAGE: docker.io/alkurbatov/sc2
+  #   image: sc2-server:alkurbatov
+  #   container_name: sc2-server
+  #   expose:
+  #     - "8167"
+  #   ports:
+  #     - "8167:8167"
+  #   networks:
+  #     - sc2net
+  #   restart: unless-stopped
 
   ros2-bridge:
     build:
@@ -31,8 +27,10 @@ services:
         USER_GID: ${GID:-1000}
     image: sc2-bridge-dev
     container_name: sc2-bridge
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
-      - SC2_HOST=sc2-server
+      - SC2_HOST=host.docker.internal
       - SC2_PORT=8167
       - SC2_MAP=/StarCraftII/maps/Flat482Spawns.SC2Map
       - DISPLAY=${DISPLAY}
@@ -48,8 +46,6 @@ services:
       ros2 launch sc2_bridge sc2_bridge.launch.py"
     networks:
       - sc2net
-    depends_on:
-      - sc2-server
 
 networks:
   sc2net:
