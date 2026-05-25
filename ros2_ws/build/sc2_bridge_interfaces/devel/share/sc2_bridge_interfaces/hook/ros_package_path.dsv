@@ -1,0 +1,1 @@
+prepend-non-duplicate;ROS_PACKAGE_PATH;/home/ros/ws/ros2_ws/src/sc2_bridge_interfaces

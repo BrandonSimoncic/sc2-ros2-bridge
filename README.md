@@ -14,7 +14,7 @@ ros2_ws/src/sc2_bridge             # rclpy bridge node and demo tooling
 
 The compose file runs two services on the `sc2net` bridge network:
 
-- `sc2-server`: StarCraft II API server image (`alkurbatov/sc2`) listening on port `8167`
+- `pysc2-docker`: StarCraft II API server image listening on port `8167`
 - `ros2-bridge`: ROS2 Humble development/build image for the workspace
 
 Start the stack:
@@ -32,8 +32,8 @@ source install/setup.bash
 ros2 launch sc2_bridge sc2_bridge.launch.py
 ```
 
-The bridge defaults to `SC2_HOST=sc2-server`, `SC2_PORT=8167`, and the sandbox map
-`/StarCraftII/maps/Flat482Spawns.SC2Map` from the `alkurbatov/sc2` image.
+The bridge defaults to `SC2_HOST=pysc2-docker`, `SC2_PORT=8167`, and the sandbox map
+`/StarCraftII/maps/Flat482Spawns.SC2Map` from the `pysc2-docker` image.
 
 ## Useful ROS Interfaces
 
@@ -176,4 +176,4 @@ docker compose run --rm ros2-bridge colcon test --event-handlers console_direct+
 
 The unit tests cover alias lifecycle, persistent discovery marks, and the serialized
 SC2 client lock behavior. Live SC2 integration still requires a working SC2 server and map
-inside the `sc2-server` image.
+inside the `pysc2-docker` image.

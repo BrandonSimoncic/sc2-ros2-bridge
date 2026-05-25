@@ -1,0 +1,15 @@
+[0.116s] Invoking command in '/home/ros/ws/ros2_ws/src/sc2_bridge': AMENT_PREFIX_PATH=/home/ros/ws/ros2_ws/install/sc2_bridge:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/ros/ws/ros2_ws/install/sc2_bridge_interfaces LD_LIBRARY_PATH=/home/ros/ws/ros2_ws/install/sc2_bridge_interfaces/lib:${LD_LIBRARY_PATH} PKG_CONFIG_PATH=/home/ros/ws/ros2_ws/install/sc2_bridge_interfaces/lib/x86_64-linux-gnu/pkgconfig:/home/ros/ws/ros2_ws/install/sc2_bridge_interfaces/lib/pkgconfig PYTEST_ADDOPTS=--tb=short --junit-xml=/home/ros/ws/ros2_ws/build/sc2_bridge/pytest.xml --junit-prefix=sc2_bridge -o cache_dir=/home/ros/ws/ros2_ws/build/sc2_bridge/.pytest_cache PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/home/ros/ws/ros2_ws/build/sc2_bridge:/home/ros/ws/ros2_ws/install/sc2_bridge/lib/python3.10/site-packages:/home/ros/ws/ros2_ws/install/sc2_bridge_interfaces/local/lib/python3.10/dist-packages:${PYTHONPATH} ROS_PACKAGE_PATH=/home/ros/ws/ros2_ws/install/sc2_bridge_interfaces/share /usr/bin/python3 -m pytest
+[0.237s] [1m============================= test session starts ==============================[0m
+[0.237s] platform linux -- Python 3.10.12, pytest-6.2.5, py-1.10.0, pluggy-0.13.0
+[0.238s] cachedir: /home/ros/ws/ros2_ws/build/sc2_bridge/.pytest_cache
+[0.238s] rootdir: /home/ros/ws/ros2_ws/src/sc2_bridge
+[0.238s] plugins: launch-testing-ros-0.19.13, ament-flake8-0.12.15, ament-lint-0.12.15, launch-testing-1.0.14, ament-xmllint-0.12.15, ament-copyright-0.12.15, ament-pep257-0.12.15, colcon-core-0.20.1
+[0.248s] [1mcollecting ... [0m[1m
+[0.248s] collected 6 items                                                              [0m
+[0.248s] 
+[0.344s] test/test_sc2_client.py [32m.[0m[32m.[0m[32m                                               [ 33%][0m
+[0.346s] test/test_state.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m                                                  [100%][0m
+[0.346s] 
+[0.346s] ----- generated xml file: /home/ros/ws/ros2_ws/build/sc2_bridge/pytest.xml -----
+[0.346s] [32m============================== [32m[1m6 passed[0m[32m in 0.11s[0m[32m ===============================[0m
+[0.371s] Invoked command in '/home/ros/ws/ros2_ws/src/sc2_bridge' returned '0': AMENT_PREFIX_PATH=/home/ros/ws/ros2_ws/install/sc2_bridge:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/ros/ws/ros2_ws/install/sc2_bridge_interfaces LD_LIBRARY_PATH=/home/ros/ws/ros2_ws/install/sc2_bridge_interfaces/lib:${LD_LIBRARY_PATH} PKG_CONFIG_PATH=/home/ros/ws/ros2_ws/install/sc2_bridge_interfaces/lib/x86_64-linux-gnu/pkgconfig:/home/ros/ws/ros2_ws/install/sc2_bridge_interfaces/lib/pkgconfig PYTEST_ADDOPTS=--tb=short --junit-xml=/home/ros/ws/ros2_ws/build/sc2_bridge/pytest.xml --junit-prefix=sc2_bridge -o cache_dir=/home/ros/ws/ros2_ws/build/sc2_bridge/.pytest_cache PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/home/ros/ws/ros2_ws/build/sc2_bridge:/home/ros/ws/ros2_ws/install/sc2_bridge/lib/python3.10/site-packages:/home/ros/ws/ros2_ws/install/sc2_bridge_interfaces/local/lib/python3.10/dist-packages:${PYTHONPATH} ROS_PACKAGE_PATH=/home/ros/ws/ros2_ws/install/sc2_bridge_interfaces/share /usr/bin/python3 -m pytest

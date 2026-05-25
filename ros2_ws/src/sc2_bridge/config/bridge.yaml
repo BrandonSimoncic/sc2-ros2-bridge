@@ -2,7 +2,7 @@ sc2_bridge:
   ros__parameters:
     sc2_host: sc2-server
     sc2_port: 8167
-    map_name: /StarCraftII/maps/Flat482Spawns.SC2Map
+    map_name: /root/StarCraftII/Maps/InterloperTest.SC2Map
     realtime: false
     step_size: 2
     publish_rate_hz: 10.0

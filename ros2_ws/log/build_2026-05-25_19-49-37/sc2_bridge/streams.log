@@ -1,0 +1,18 @@
+[0.360s] Invoking command in '/home/ros/ws/ros2_ws/build/sc2_bridge': CMAKE_PREFIX_PATH=/home/ros/ws/ros2_ws/install/sc2_bridge_interfaces LD_LIBRARY_PATH=/home/ros/ws/ros2_ws/install/sc2_bridge_interfaces/lib:${LD_LIBRARY_PATH} PKG_CONFIG_PATH=/home/ros/ws/ros2_ws/install/sc2_bridge_interfaces/lib/x86_64-linux-gnu/pkgconfig:/home/ros/ws/ros2_ws/install/sc2_bridge_interfaces/lib/pkgconfig PYTHONPATH=/home/ros/ws/ros2_ws/build/sc2_bridge/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/ros/ws/ros2_ws/install/sc2_bridge/lib/python3.10/site-packages:/home/ros/ws/ros2_ws/install/sc2_bridge_interfaces/local/lib/python3.10/dist-packages:${PYTHONPATH} ROS_PACKAGE_PATH=/home/ros/ws/ros2_ws/install/sc2_bridge_interfaces/share /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/ros/ws/ros2_ws/build/sc2_bridge/build --no-deps symlink_data
+[0.512s] running develop
+[0.572s] running egg_info
+[0.573s] writing sc2_bridge.egg-info/PKG-INFO
+[0.573s] writing dependency_links to sc2_bridge.egg-info/dependency_links.txt
+[0.573s] writing entry points to sc2_bridge.egg-info/entry_points.txt
+[0.573s] writing requirements to sc2_bridge.egg-info/requires.txt
+[0.573s] writing top-level names to sc2_bridge.egg-info/top_level.txt
+[0.575s] reading manifest file 'sc2_bridge.egg-info/SOURCES.txt'
+[0.575s] writing manifest file 'sc2_bridge.egg-info/SOURCES.txt'
+[0.576s] running build_ext
+[0.576s] Creating /home/ros/ws/ros2_ws/install/sc2_bridge/lib/python3.10/site-packages/sc2-bridge.egg-link (link to .)
+[0.577s] Installing sc2_bridge_node script to /home/ros/ws/ros2_ws/install/sc2_bridge/lib/sc2_bridge
+[0.577s] Installing swarm_demo script to /home/ros/ws/ros2_ws/install/sc2_bridge/lib/sc2_bridge
+[0.578s] 
+[0.578s] Installed /home/ros/ws/ros2_ws/build/sc2_bridge
+[0.578s] running symlink_data
+[0.625s] Invoked command in '/home/ros/ws/ros2_ws/build/sc2_bridge' returned '0': CMAKE_PREFIX_PATH=/home/ros/ws/ros2_ws/install/sc2_bridge_interfaces LD_LIBRARY_PATH=/home/ros/ws/ros2_ws/install/sc2_bridge_interfaces/lib:${LD_LIBRARY_PATH} PKG_CONFIG_PATH=/home/ros/ws/ros2_ws/install/sc2_bridge_interfaces/lib/x86_64-linux-gnu/pkgconfig:/home/ros/ws/ros2_ws/install/sc2_bridge_interfaces/lib/pkgconfig PYTHONPATH=/home/ros/ws/ros2_ws/build/sc2_bridge/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/ros/ws/ros2_ws/install/sc2_bridge/lib/python3.10/site-packages:/home/ros/ws/ros2_ws/install/sc2_bridge_interfaces/local/lib/python3.10/dist-packages:${PYTHONPATH} ROS_PACKAGE_PATH=/home/ros/ws/ros2_ws/install/sc2_bridge_interfaces/share /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/ros/ws/ros2_ws/build/sc2_bridge/build --no-deps symlink_data
