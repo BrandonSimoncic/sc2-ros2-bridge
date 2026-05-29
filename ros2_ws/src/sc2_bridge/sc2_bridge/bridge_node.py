@@ -516,7 +516,7 @@ class Sc2BridgeNode(Node):
         aggregate = UnitStateArray()
         aggregate.header = header
         aggregate.game_loop = game_loop
-        aggregate.units = [self._unit_msg(unit) for unit in unit_snapshots]
+        aggregate.units = [self._unit_msg(unit) for unit in self_units]
         self._units_pub.publish(aggregate)
 
         if self.publish_contacts:
