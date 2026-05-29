@@ -33,14 +33,61 @@ sc2-bridge container            │  /tmp/sc2-signals/ (Docker bind-mount)
 
 These are cleaned automatically on bridge startup.
 
-## Quick start
+## Setup (new machine)
+
+### Prerequisites
+
+- Docker with BuildKit support (`docker --version` ≥ 20.10)
+- Docker Compose v2 (`docker compose version`)
+- A running X11 display (Linux desktop or SSH with X forwarding)
+- `DISPLAY` and `XAUTHORITY` environment variables set (they normally are on a desktop)
+
+### One-time X11 permission
+
+Allow Docker containers to open windows on your display:
+
+```bash
+xhost +local:docker
+```
+
+Run this once per login session (or add to `~/.bashrc`).
+
+### First-time build
+
+The SC2 binary (~1.1 GB) is downloaded from Blizzard during the `pysc2` image build.
+This only happens once; subsequent builds use the Docker layer cache.
+
+```bash
+docker compose build
+```
+
+### Start the stack
 
 ```bash
 docker compose up
 ```
 
-SC2 starts, the bridge connects, creates the game, and a pygame window opens
-showing the game. Allow ~15 s for the full startup sequence.
+Both images build if needed. SC2 starts, the bridge connects, creates the game, and
+a pygame window opens showing the game. Allow ~30 s on first run (SC2 is slow to
+start), ~15 s on subsequent runs.
+
+### What gets built
+
+| Image | Source | Notes |
+|-------|--------|-------|
+| `pysc2` | `sc2_server/Dockerfile` | Downloads SC2 4.9.3 binary from Blizzard |
+| `sc2-bridge-dev` | `Dockerfile` | ROS2 Humble + pysc2 Python bindings |
+
+### Environment variables (`.env`)
+
+Docker Compose reads these from your shell automatically:
+
+| Variable | Required | Notes |
+|----------|----------|-------|
+| `DISPLAY` | Yes | X11 display (e.g. `:0`) |
+| `XAUTHORITY` | Yes | Path to Xauthority cookie file |
+| `UID` | No | Defaults to `1000` |
+| `GID` | No | Defaults to `1000` |
 
 ## Entering the bridge container
 

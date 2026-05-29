@@ -1,5 +1,8 @@
 services:
   sc2-server:
+    build:
+      context: sc2_server
+      dockerfile: Dockerfile
     image: pysc2
     container_name: sc2-server
     command: >
