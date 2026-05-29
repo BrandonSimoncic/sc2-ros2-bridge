@@ -3,7 +3,7 @@ sc2_bridge:
     sc2_host: sc2-server
     sc2_port: 8167
     map_name: /root/StarCraftII/Maps/InterloperTest.SC2Map
-    realtime: false
+    realtime: true
     step_size: 2
     publish_rate_hz: 10.0
     world_frame_id: sc2_map
@@ -14,6 +14,7 @@ sc2_bridge:
     mark_staleness_sec: 0.0
     publish_contacts: true
     autostart: true
+    join_only: false
     computer_opponent: true
     move_ability_id: 16
     attack_ability_id: 23

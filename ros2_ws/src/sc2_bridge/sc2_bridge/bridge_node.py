@@ -9,13 +9,14 @@ from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple
 
 import rclpy
 from builtin_interfaces.msg import Time
-from geometry_msgs.msg import Point, TransformStamped
+from geometry_msgs.msg import Point, PointStamped, TransformStamped
 from rclpy.action import ActionServer, CancelResponse, GoalResponse
 from rclpy.callback_groups import MutuallyExclusiveCallbackGroup, ReentrantCallbackGroup
 from rclpy.executors import MultiThreadedExecutor
 from rclpy.node import Node
 from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
 from std_msgs.msg import Header
+from std_srvs.srv import Trigger
 from tf2_ros import TransformBroadcaster
 from visualization_msgs.msg import Marker, MarkerArray
 
@@ -84,6 +85,9 @@ class Sc2BridgeNode(Node):
         self._interfaces_lock = threading.RLock()
         self._connected = False
         self._game_started = False
+        self._map_size: Optional[Tuple[int, int]] = None  # full map (x, y) in tiles
+
+        self._clear_signal_cache()
 
         self._client = SerializedSc2Client(
             host=self.sc2_host,
@@ -119,8 +123,21 @@ class Sc2BridgeNode(Node):
             self._handle_kill_units,
             callback_group=self._service_group,
         )
+        self._restart_srv = self.create_service(
+            Trigger,
+            "/sc2/restart_game",
+            self._handle_restart_game,
+            callback_group=self._service_group,
+        )
 
         self._tf_broadcaster = TransformBroadcaster(self) if self.publish_tf else None
+
+        self._camera_sub = self.create_subscription(
+            Point,
+            "/sc2/camera_target",
+            self._on_camera_target,
+            10,
+        )
 
         if self.autostart:
             try:
@@ -161,6 +178,7 @@ class Sc2BridgeNode(Node):
         self.declare_parameter("mark_staleness_sec", 0.0)
         self.declare_parameter("publish_contacts", True)
         self.declare_parameter("autostart", True)
+        self.declare_parameter("join_only", os.environ.get("SC2_JOIN_ONLY", "false").lower() == "true")
         self.declare_parameter("computer_opponent", True)
         self.declare_parameter("move_ability_id", abilities.MOVE)
         self.declare_parameter("attack_ability_id", abilities.ATTACK)
@@ -184,6 +202,7 @@ class Sc2BridgeNode(Node):
         self.mark_staleness_sec = float(self.get_parameter("mark_staleness_sec").value)
         self.publish_contacts = bool(self.get_parameter("publish_contacts").value)
         self.autostart = bool(self.get_parameter("autostart").value)
+        self.join_only = bool(self.get_parameter("join_only").value)
         self.computer_opponent = bool(self.get_parameter("computer_opponent").value)
         self.move_ability_id = int(self.get_parameter("move_ability_id").value)
         self.attack_ability_id = int(self.get_parameter("attack_ability_id").value)
@@ -193,16 +212,6 @@ class Sc2BridgeNode(Node):
         )
 
     def _start_game(self) -> None:
-        self.get_logger().info(
-            f"Connecting to SC2 API at {self.sc2_host}:{self.sc2_port}"
-        )
-        ping = self._client.connect()
-        self._connected = True
-        self.get_logger().info(
-            "SC2 ping successful: "
-            f"version='{ping.game_version}' base_build={ping.base_build}"
-        )
-
         try:
             from s2clientprotocol import common_pb2 as common_pb
             from s2clientprotocol import sc2api_pb2 as sc_pb
@@ -211,28 +220,52 @@ class Sc2BridgeNode(Node):
                 "s2clientprotocol is not installed; install pysc2 dependencies first"
             ) from exc
 
-        create = sc_pb.RequestCreateGame(
-            realtime=self.realtime,
-            disable_fog=False,
-        )
-        create.local_map.map_path = self.map_name
+        if self.join_only:
+            self._join_existing_game(common_pb, sc_pb)
+        else:
+            self.get_logger().info(
+                f"Connecting to SC2 API at {self.sc2_host}:{self.sc2_port}"
+            )
+            ping = self._client.connect()
+            self._connected = True
+            self.get_logger().info(
+                "SC2 ping successful: "
+                f"version='{ping.game_version}' base_build={ping.base_build}"
+            )
 
-        participant = create.player_setup.add()
-        participant.type = sc_pb.Participant
+            create = sc_pb.RequestCreateGame(
+                realtime=self.realtime,
+                disable_fog=True,
+            )
+            create.local_map.map_path = self.map_name
 
-        if self.computer_opponent:
-            opponent = create.player_setup.add()
-            opponent.type = sc_pb.Computer
-            opponent.race = common_pb.Random
-            opponent.difficulty = sc_pb.VeryEasy
+            participant = create.player_setup.add()
+            participant.type = sc_pb.Participant
 
-        join = sc_pb.RequestJoinGame()
-        join.race = common_pb.Terran
-        join.options.raw = True
-        join.options.score = False
+            if self.computer_opponent:
+                opponent = create.player_setup.add()
+                opponent.type = sc_pb.Computer
+                opponent.race = common_pb.Random
+                opponent.difficulty = sc_pb.VeryEasy
 
-        self._client.create_game(create)
-        self._client.join_game(join)
+            self._client.create_game(create)
+
+            join = sc_pb.RequestJoinGame()
+            join.race = common_pb.Terran
+            join.options.raw = True
+            join.options.score = False
+            join.options.render.resolution.x = 1024
+            join.options.render.resolution.y = 768
+            join.options.render.minimap_resolution.x = 128
+            join.options.render.minimap_resolution.y = 128
+            join.options.feature_layer.width = 24
+            join.options.feature_layer.resolution.x = 84
+            join.options.feature_layer.resolution.y = 84
+            join.options.feature_layer.minimap_resolution.x = 64
+            join.options.feature_layer.minimap_resolution.y = 64
+
+            self._client.join_game(join)
+
         self._game_started = True
         self.get_logger().info(
             f"Joined SC2 game on map '{self.map_name}' "
@@ -243,6 +276,55 @@ class Sc2BridgeNode(Node):
             self._try_enable_god_mode()
 
         self._publish_game_info()
+
+    def _join_existing_game(self, common_pb: Any, sc_pb: Any) -> None:
+        """Wait for game_created signal from play_sc2.py then join as Player 2.
+
+        The handshake works as follows:
+          1. play_sc2.py creates the game and writes 'game_created'.
+          2. This method connects (with retry) and then writes 'player2_connected'
+             BEFORE calling join_game.
+          3. play_sc2.py sees 'player2_connected' and only then calls Player 1's
+             join_game, ensuring SC2 sees two WebSocket connections and treats
+             the session as multi-player."""
+        signal_file = '/tmp/sc2-signals/game_created'
+        p2_signal   = '/tmp/sc2-signals/player2_connected'
+        deadline = time.time() + 120.0
+        self.get_logger().info(
+            f"Waiting for SC2 game_created signal at {signal_file} ..."
+        )
+        while not os.path.exists(signal_file):
+            if time.time() > deadline:
+                raise Sc2ClientError(
+                    "Timed out after 120s waiting for game_created signal from sc2-server"
+                )
+            time.sleep(1.0)
+
+        self.get_logger().info(
+            "game_created signal received — connecting to SC2 as Player 2"
+        )
+        ping = self._client.connect()
+        self._connected = True
+        self.get_logger().info(
+            "SC2 ping successful: "
+            f"version='{ping.game_version}' base_build={ping.base_build}"
+        )
+
+        # Write handshake signal so play_sc2.py knows Player 2's WebSocket
+        # is established before Player 1 calls join_game.
+        try:
+            open(p2_signal, 'w').close()
+            self.get_logger().info(
+                "Wrote player2_connected signal — waiting for game to start"
+            )
+        except Exception as exc:
+            self.get_logger().warn(f"Could not write player2_connected signal: {exc}")
+
+        join = sc_pb.RequestJoinGame()
+        join.race = common_pb.Terran
+        join.options.raw = True
+        join.options.score = False
+        self._client.join_game(join)
 
     def _try_enable_god_mode(self) -> None:
         try:
@@ -278,10 +360,20 @@ class Sc2BridgeNode(Node):
             if playable is not None:
                 msg.playable_min = self._point_from_proto(getattr(playable, "p0", None))
                 msg.playable_max = self._point_from_proto(getattr(playable, "p1", None))
+            start_raw = getattr(info, "start_raw", None)
+            map_size = getattr(start_raw, "map_size", None)
+            if map_size is not None:
+                self._map_size = (int(getattr(map_size, "x", 0)),
+                                  int(getattr(map_size, "y", 0)))
         except Exception as exc:
             self.get_logger().warning(f"Could not read SC2 game_info: {exc}")
 
         self._game_info_pub.publish(msg)
+
+    _FRAME_FILE = '/tmp/sc2-signals/frame.bin'
+    _META_FILE  = '/tmp/sc2-signals/frame_meta.txt'
+    _FRAME_W    = 1024
+    _FRAME_H    = 768
 
     def _on_timer(self) -> None:
         if not self._game_started:
@@ -291,11 +383,37 @@ class Sc2BridgeNode(Node):
             if not self.realtime:
                 self._client.step(self.step_size)
             observation = self._client.observe()
+            self._write_render_frame(observation)
             self._process_observation(observation)
         except Exception as exc:
             self.get_logger().error(f"SC2 observation tick failed: {exc}")
             self._game_started = False
             self._connected = False
+
+    def _write_render_frame(self, response: Any) -> None:
+        """Write the latest RGB render frame to a shared file for display_frames.py."""
+        try:
+            obs = getattr(response, 'observation', response)
+            render = getattr(obs, 'render_data', None)
+            if render is None:
+                return
+            map_render = getattr(render, 'map', None)
+            if map_render is None:
+                return
+            data = getattr(map_render, 'data', b'')
+            if not data:
+                return
+            # Write meta once (dimensions don't change mid-game)
+            if not os.path.exists(self._META_FILE):
+                with open(self._META_FILE, 'w') as f:
+                    f.write(f'{self._FRAME_W},{self._FRAME_H}')
+            # Atomic write so the display never reads a partial frame
+            tmp = self._FRAME_FILE + '.tmp'
+            with open(tmp, 'wb') as f:
+                f.write(data)
+            os.replace(tmp, self._FRAME_FILE)
+        except Exception:
+            pass
 
     def _process_observation(self, response: Any) -> None:
         observation = getattr(response, "observation", response)
@@ -426,6 +544,59 @@ class Sc2BridgeNode(Node):
         changed, marks = self._mark_registry.process(contacts, dead_tags, now_nsec)
         if changed:
             self._publish_marks(marks)
+
+    def _clear_signal_cache(self) -> None:
+        signal_dir = '/tmp/sc2-signals'
+        for fname in ('frame.bin', 'frame.bin.tmp', 'frame_meta.txt',
+                      'game_created', 'player2_connected'):
+            try:
+                os.remove(os.path.join(signal_dir, fname))
+            except FileNotFoundError:
+                pass
+
+    def _handle_restart_game(
+        self, request: Trigger.Request, response: Trigger.Response
+    ) -> Trigger.Response:
+        if not self._game_started:
+            response.success = False
+            response.message = "Game is not running"
+            return response
+        try:
+            self._client._call(("restart_game", "restart"))
+            self._clear_signal_cache()
+            self._aliases = AliasRegistry()
+            self._unit_store = UnitStore()
+            self._mark_registry = DiscoveryMarkRegistry(
+                mark_alliances=self.mark_alliances,
+                staleness_nsec=int(self.mark_staleness_sec * 1_000_000_000),
+            )
+            response.success = True
+            response.message = "Game restarted"
+        except Exception as exc:
+            response.success = False
+            response.message = str(exc)
+        return response
+
+    def _on_camera_target(self, msg: Point) -> None:
+        if self._game_started:
+            self._move_camera(Position(msg.x, msg.y, msg.z))
+
+    def _move_camera(self, position: "Position") -> None:
+        if self._map_size is None:
+            return
+        try:
+            from s2clientprotocol import sc2api_pb2 as sc_pb
+            res = 64  # feature_layer minimap_resolution set at join time
+            map_w, map_h = self._map_size
+            mx = max(0, min(res - 1, int(position.x / map_w * res)))
+            my = max(0, min(res - 1, int(position.y / map_h * res)))
+            req = sc_pb.RequestAction()
+            cam = req.actions.add().action_feature_layer.camera_move
+            cam.center_minimap.x = mx
+            cam.center_minimap.y = my
+            self._client.actions(req)
+        except Exception:
+            pass
 
     def _publish_marks(self, marks: Sequence[ContactMarkSnapshot]) -> None:
         header = self._header()

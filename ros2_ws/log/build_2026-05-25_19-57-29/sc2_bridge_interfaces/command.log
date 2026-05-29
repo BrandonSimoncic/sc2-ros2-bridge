@@ -1,4 +1,0 @@
-Invoking command in '/home/ros/ws/ros2_ws/build/sc2_bridge_interfaces': /usr/bin/cmake --build /home/ros/ws/ros2_ws/build/sc2_bridge_interfaces -- -j24 -l24
-Invoked command in '/home/ros/ws/ros2_ws/build/sc2_bridge_interfaces' returned '0': /usr/bin/cmake --build /home/ros/ws/ros2_ws/build/sc2_bridge_interfaces -- -j24 -l24
-Invoking command in '/home/ros/ws/ros2_ws/build/sc2_bridge_interfaces': /usr/bin/cmake --install /home/ros/ws/ros2_ws/build/sc2_bridge_interfaces
-Invoked command in '/home/ros/ws/ros2_ws/build/sc2_bridge_interfaces' returned '0': /usr/bin/cmake --install /home/ros/ws/ros2_ws/build/sc2_bridge_interfaces

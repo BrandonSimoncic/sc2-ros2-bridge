@@ -1,21 +1,25 @@
 services:
   sc2-server:
-    build:
-      context: ./sc2_server
-    image: sc2-server:pysc2
+    image: pysc2
     container_name: sc2-server
     command: >
-      /root/StarCraftII/Versions/Base75025/SC2_x64
-      -listen 0.0.0.0
-      -port 8167
-      -displayMode 0
+      bash -c "python /root/launch_sc2.py &
+               python /root/display_frames.py;
+               wait"
     environment:
       - DISPLAY=${DISPLAY}
-      - XAUTHORITY=${XAUTHORITY:-/root/.Xauthority}
+      - LIBGL_ALWAYS_SOFTWARE=1
+      - SDL_VIDEO_X11_MITSHM=0
+      - SC2PATH=/root/StarCraftII/
+      - PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
     volumes:
-      - /tmp/.X11-unix:/tmp/.X11-unix:rw
-      - ${XAUTHORITY:-~/.Xauthority}:/root/.Xauthority:ro
-      - ./maps:/root/StarCraftII/Maps
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - ${XAUTHORITY}:/root/.Xauthority:rw
+      - ./maps/InterloperTest.SC2Map:/root/StarCraftII/Maps/InterloperTest.SC2Map:ro
+      - ./sc2_server/launch_sc2.py:/root/launch_sc2.py:ro
+      - ./sc2_server/play_sc2.py:/root/play_sc2.py:ro
+      - ./sc2_server/display_frames.py:/root/display_frames.py:ro
+      - ./sc2-signals:/tmp/sc2-signals
     expose:
       - "8167"
     ports:
@@ -42,6 +46,7 @@ services:
       - SC2_MAP=/root/StarCraftII/Maps/InterloperTest.SC2Map
     volumes:
       - .:/home/ros/ws
+      - ./sc2-signals:/tmp/sc2-signals
     working_dir: /home/ros/ws/ros2_ws
     command: >
       bash -lc "colcon build --symlink-install &&
