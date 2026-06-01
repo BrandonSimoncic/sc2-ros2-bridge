@@ -6,9 +6,7 @@ services:
     image: pysc2
     container_name: sc2-server
     command: >
-      bash -c "python /root/launch_sc2.py &
-               python /root/display_frames.py;
-               wait"
+      bash -c "python /root/launch_sc2.py"
     environment:
       - DISPLAY=${DISPLAY}
       - LIBGL_ALWAYS_SOFTWARE=1
@@ -47,9 +45,14 @@ services:
       - SC2_HOST=sc2-server
       - SC2_PORT=8167
       - SC2_MAP=/root/StarCraftII/Maps/InterloperTest.SC2Map
+      - DISPLAY=${DISPLAY}
+      - LIBGL_ALWAYS_SOFTWARE=1
+      - SDL_VIDEO_X11_MITSHM=0
     volumes:
       - .:/home/ros/ws
       - ./sc2-signals:/tmp/sc2-signals
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - ${XAUTHORITY}:/home/ros/.Xauthority:rw
     working_dir: /home/ros/ws/ros2_ws
     command: >
       bash -lc "colcon build --symlink-install &&
