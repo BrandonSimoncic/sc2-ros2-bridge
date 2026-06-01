@@ -11,6 +11,7 @@ import rclpy
 from builtin_interfaces.msg import Time
 from geometry_msgs.msg import Point, PointStamped, TransformStamped
 from rclpy.action import ActionServer, CancelResponse, GoalResponse
+from sensor_msgs.msg import Image
 from rclpy.callback_groups import MutuallyExclusiveCallbackGroup, ReentrantCallbackGroup
 from rclpy.executors import MultiThreadedExecutor
 from rclpy.node import Node
@@ -94,6 +95,16 @@ class Sc2BridgeNode(Node):
             port=self.sc2_port,
             timeout_seconds=self.sc2_timeout_sec,
             retry_timeout_seconds=self.sc2_retry_timeout_sec,
+        )
+
+        self._render_pub = self.create_publisher(
+            Image, "/sc2/render", self._sensor_qos
+        )
+        self._minimap_pub = self.create_publisher(
+            Image, "/sc2/minimap", self._sensor_qos
+        )
+        self._camera_pos_pub = self.create_publisher(
+            Point, "/sc2/camera_pos", self._sensor_qos
         )
 
         self._units_pub = self.create_publisher(
@@ -324,6 +335,15 @@ class Sc2BridgeNode(Node):
         join.race = common_pb.Terran
         join.options.raw = True
         join.options.score = False
+        join.options.render.resolution.x = 1024
+        join.options.render.resolution.y = 768
+        join.options.render.minimap_resolution.x = 128
+        join.options.render.minimap_resolution.y = 128
+        join.options.feature_layer.width = 24
+        join.options.feature_layer.resolution.x = 84
+        join.options.feature_layer.resolution.y = 84
+        join.options.feature_layer.minimap_resolution.x = 64
+        join.options.feature_layer.minimap_resolution.y = 64
         self._client.join_game(join)
 
     def _try_enable_god_mode(self) -> None:
@@ -391,29 +411,50 @@ class Sc2BridgeNode(Node):
             self._connected = False
 
     def _write_render_frame(self, response: Any) -> None:
-        """Write the latest RGB render frame to a shared file for display_frames.py."""
+        """Write render frames to tmpfs and publish as ROS2 Image topics."""
         try:
             obs = getattr(response, 'observation', response)
             render = getattr(obs, 'render_data', None)
             if render is None:
                 return
+
             map_render = getattr(render, 'map', None)
-            if map_render is None:
-                return
-            data = getattr(map_render, 'data', b'')
-            if not data:
-                return
-            # Write meta once (dimensions don't change mid-game)
-            if not os.path.exists(self._META_FILE):
-                with open(self._META_FILE, 'w') as f:
-                    f.write(f'{self._FRAME_W},{self._FRAME_H}')
-            # Atomic write so the display never reads a partial frame
-            tmp = self._FRAME_FILE + '.tmp'
-            with open(tmp, 'wb') as f:
-                f.write(data)
-            os.replace(tmp, self._FRAME_FILE)
+            if map_render is not None:
+                data = getattr(map_render, 'data', b'')
+                if data:
+                    if not os.path.exists(self._META_FILE):
+                        with open(self._META_FILE, 'w') as f:
+                            f.write(f'{self._FRAME_W},{self._FRAME_H}')
+                    tmp = self._FRAME_FILE + '.tmp'
+                    with open(tmp, 'wb') as f:
+                        f.write(data)
+                    os.replace(tmp, self._FRAME_FILE)
+                    self._render_pub.publish(
+                        self._ros_image(data, self._FRAME_W, self._FRAME_H)
+                    )
+
+            mini_render = getattr(render, 'minimap', None)
+            if mini_render is not None:
+                mini_data = getattr(mini_render, 'data', b'')
+                if mini_data:
+                    self._minimap_pub.publish(
+                        self._ros_image(mini_data, self._MINIMAP_W, self._MINIMAP_H)
+                    )
         except Exception:
             pass
+
+    _MINIMAP_W = 128
+    _MINIMAP_H = 128
+
+    def _ros_image(self, data: bytes, w: int, h: int) -> Image:
+        msg = Image()
+        msg.header = self._header()
+        msg.width = w
+        msg.height = h
+        msg.encoding = 'rgb8'
+        msg.step = w * 3
+        msg.data = bytes(data)
+        return msg
 
     def _process_observation(self, response: Any) -> None:
         observation = getattr(response, "observation", response)
@@ -424,6 +465,14 @@ class Sc2BridgeNode(Node):
 
         game_loop = int(getattr(observation, "game_loop", 0))
         dead_tags = [int(tag) for tag in getattr(getattr(raw_data, "event", None), "dead_units", [])]
+
+        player = getattr(raw_data, 'player', None)
+        cam = getattr(player, 'camera', None)
+        if cam is not None:
+            self._camera_pos_pub.publish(Point(
+                x=float(getattr(cam, 'x', 0.0)),
+                y=float(getattr(cam, 'y', 0.0)),
+            ))
 
         unit_snapshots: List[UnitSnapshot] = []
         self_units: List[UnitSnapshot] = []
