@@ -1,8 +1,0 @@
-uint32 unit_type
-uint32 owner
-geometry_msgs/Point[] positions
----
-string[] aliases
-uint64[] tags
-bool success
-string message
