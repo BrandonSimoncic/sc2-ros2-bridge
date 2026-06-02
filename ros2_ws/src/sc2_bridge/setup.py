@@ -23,6 +23,8 @@ setup(
     entry_points={
         "console_scripts": [
             "sc2_bridge_node = sc2_bridge.bridge_node:main",
+            "sc2_display = sc2_bridge.display:main",
+            "sc2_minimap = sc2_bridge.display_minimap:main",
             "swarm_demo = sc2_bridge.swarm_demo:main",
         ],
     },

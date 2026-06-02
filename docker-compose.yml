@@ -9,7 +9,7 @@ services:
       bash -c "python /root/launch_sc2.py"
     environment:
       - DISPLAY=${DISPLAY}
-      - LIBGL_ALWAYS_SOFTWARE=1
+      - SDL_VIDEODRIVER=x11
       - SDL_VIDEO_X11_MITSHM=0
       - SC2PATH=/root/StarCraftII/
       - PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
@@ -46,7 +46,7 @@ services:
       - SC2_PORT=8167
       - SC2_MAP=/root/StarCraftII/Maps/InterloperTest.SC2Map
       - DISPLAY=${DISPLAY}
-      - LIBGL_ALWAYS_SOFTWARE=1
+      - SDL_VIDEODRIVER=x11
       - SDL_VIDEO_X11_MITSHM=0
     volumes:
       - .:/home/ros/ws

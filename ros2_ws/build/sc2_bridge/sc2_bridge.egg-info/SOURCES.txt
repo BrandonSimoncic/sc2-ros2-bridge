@@ -7,6 +7,8 @@ resource/sc2_bridge
 sc2_bridge/__init__.py
 sc2_bridge/abilities.py
 sc2_bridge/bridge_node.py
+sc2_bridge/display.py
+sc2_bridge/display_minimap.py
 sc2_bridge/sc2_client.py
 sc2_bridge/state.py
 sc2_bridge/swarm_demo.py

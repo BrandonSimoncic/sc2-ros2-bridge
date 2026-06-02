@@ -24,5 +24,17 @@ def generate_launch_description():
                 output="screen",
                 parameters=[LaunchConfiguration("params_file")],
             ),
+            Node(
+                package="sc2_bridge",
+                executable="sc2_display",
+                name="sc2_display",
+                output="screen",
+            ),
+            Node(
+                package="sc2_bridge",
+                executable="sc2_minimap",
+                name="sc2_minimap",
+                output="screen",
+            ),
         ]
     )

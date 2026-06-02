@@ -631,14 +631,14 @@ class Sc2BridgeNode(Node):
             self._move_camera(Position(msg.x, msg.y, msg.z))
 
     def _move_camera(self, position: "Position") -> None:
-        if self._map_size is None:
-            return
         try:
             from s2clientprotocol import sc2api_pb2 as sc_pb
             res = 64  # feature_layer minimap_resolution set at join time
-            map_w, map_h = self._map_size
+            map_w = float(self._map_size[0]) if self._map_size else 64.0
+            map_h = float(self._map_size[1]) if self._map_size else 64.0
             mx = max(0, min(res - 1, int(position.x / map_w * res)))
-            my = max(0, min(res - 1, int(position.y / map_h * res)))
+            # Feature-layer minimap y=0 is north (top); world y=0 is south (bottom).
+            my = max(0, min(res - 1, int((map_h - position.y) / map_h * res)))
             req = sc_pb.RequestAction()
             cam = req.actions.add().action_feature_layer.camera_move
             cam.center_minimap.x = mx

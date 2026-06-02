@@ -2,7 +2,6 @@
 """SC2 main-view display: subscribes to /sc2/render (sensor_msgs/Image) and
 renders it via pygame. WASD / arrow keys publish /sc2/camera_target to scroll
 the camera. rclpy spins in a daemon thread; pygame runs on the main thread."""
-import sys
 import threading
 import time
 
@@ -20,17 +19,19 @@ except ImportError:
     _HAVE_GAME_INFO = False
 
 POLL_HZ = 30
-CAM_STEP = 8.0  # world units per keypress
+CAM_SPEED = 15.0       # world units per second while key is held
+CAM_PUBLISH_HZ = 10.0  # max camera_target publishes per second
 
-_KEY_MAP = {
-    pygame.K_w:     (0.0,  +CAM_STEP),
-    pygame.K_UP:    (0.0,  +CAM_STEP),
-    pygame.K_s:     (0.0,  -CAM_STEP),
-    pygame.K_DOWN:  (0.0,  -CAM_STEP),
-    pygame.K_a:     (-CAM_STEP, 0.0),
-    pygame.K_LEFT:  (-CAM_STEP, 0.0),
-    pygame.K_d:     (+CAM_STEP, 0.0),
-    pygame.K_RIGHT: (+CAM_STEP, 0.0),
+# Unit direction vectors; step is scaled by CAM_SPEED / POLL_HZ each frame.
+_MOVE_KEYS = {
+    pygame.K_w:     ( 0.0, +1.0),
+    pygame.K_UP:    ( 0.0, +1.0),
+    pygame.K_s:     ( 0.0, -1.0),
+    pygame.K_DOWN:  ( 0.0, -1.0),
+    pygame.K_a:     (-1.0,  0.0),
+    pygame.K_LEFT:  (-1.0,  0.0),
+    pygame.K_d:     (+1.0,  0.0),
+    pygame.K_RIGHT: (+1.0,  0.0),
 }
 
 
@@ -51,13 +52,14 @@ class DisplayNode(Node):
         self._cam_pub = self.create_publisher(Point, '/sc2/camera_target', 10)
 
         self.create_subscription(Image, '/sc2/render', self._on_render, sensor_qos)
-        self.create_subscription(Point, '/sc2/camera_pos', self._on_cam_pos, sensor_qos)
 
         if _HAVE_GAME_INFO:
             self.create_subscription(GameInfo, '/sc2/game_info', self._on_game_info, latched_qos)
 
         # Shared state — written by spin thread, read by pygame thread.
-        # Plain attribute assignment is atomic under the GIL.
+        # cam_x/cam_y is the display node's own target; never overwritten by
+        # /sc2/camera_pos feedback to avoid a feedback-loop that snaps the
+        # position back before SC2 has processed the move command.
         self.frame_bytes: bytes = b''
         self.frame_w: int = 0
         self.frame_h: int = 0
@@ -65,15 +67,12 @@ class DisplayNode(Node):
         self.cam_y: float = 32.0
         self.map_w: float = 64.0
         self.map_h: float = 64.0
+        self._next_cam_pub: float = 0.0
 
     def _on_render(self, msg: Image) -> None:
         self.frame_bytes = bytes(msg.data)
         self.frame_w = msg.width
         self.frame_h = msg.height
-
-    def _on_cam_pos(self, msg: Point) -> None:
-        self.cam_x = msg.x
-        self.cam_y = msg.y
 
     def _on_game_info(self, msg: 'GameInfo') -> None:
         if msg.playable_max.x > 0:
@@ -84,6 +83,12 @@ class DisplayNode(Node):
     def move_camera(self, dx: float, dy: float) -> None:
         self.cam_x = max(0.0, min(self.map_w, self.cam_x + dx))
         self.cam_y = max(0.0, min(self.map_h, self.cam_y + dy))
+        # Rate-limit publishes to CAM_PUBLISH_HZ so the bridge's SC2 client
+        # isn't flooded with blocking network calls when keys are held.
+        now = time.monotonic()
+        if now < self._next_cam_pub:
+            return
+        self._next_cam_pub = now + 1.0 / CAM_PUBLISH_HZ
         pt = Point()
         pt.x = self.cam_x
         pt.y = self.cam_y
@@ -108,12 +113,19 @@ def main() -> None:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     return
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:
-                        return
-                    delta = _KEY_MAP.get(event.key)
-                    if delta is not None:
-                        node.move_camera(*delta)
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                    return
+
+            # Continuous movement while keys are held.
+            keys = pygame.key.get_pressed()
+            dx, dy = 0.0, 0.0
+            for key, (kx, ky) in _MOVE_KEYS.items():
+                if keys[key]:
+                    dx += kx
+                    dy += ky
+            if dx != 0.0 or dy != 0.0:
+                step = CAM_SPEED / POLL_HZ
+                node.move_camera(dx * step, dy * step)
 
             w, h = node.frame_w, node.frame_h
             data = node.frame_bytes
